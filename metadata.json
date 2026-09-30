@@ -1,0 +1,7 @@
+{
+  "name": "Quick-Bite University - Campus Dining",
+  "description": "Sistema de pedidos para cafetería universitaria diseñado con Clean Architecture, principios SOLID, entidades Product y Order, y gestión en tiempo real.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
