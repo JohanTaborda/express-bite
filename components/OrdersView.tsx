@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { useCart } from '@/context/CartContext';
-import { OrderOutputDTO } from '@/lib/clean-architecture/application/dtos/OrderDTO';
 import { OrderStatus } from '@/lib/clean-architecture/domain/value-objects/OrderStatus';
 import { ReceiptModal } from './ReceiptModal';
 
@@ -13,7 +12,6 @@ export function OrdersView() {
     allOrders,
     refreshOrders,
     showToast,
-    addItem,
     setActiveTab,
   } = useCart();
 
@@ -48,7 +46,7 @@ export function OrdersView() {
 
   const handleCancelOrder = async () => {
     if (!currentOrder) return;
-    if (!confirm('¿Estás seguro de que deseas cancelar este pedido? Se reembolsará el saldo.')) {
+    if (!confirm('¿Estás seguro de que deseas cancelar este pedido? Se reembolsará el saldo a tu carné universitario.')) {
       return;
     }
     setIsUpdatingStatus(true);
@@ -64,7 +62,7 @@ export function OrdersView() {
       }
       setActiveOrder(json.data);
       await refreshOrders();
-      showToast('Pedido cancelado y reembolsado con éxito.');
+      showToast('Pedido cancelado y saldo reembolsado.');
     } catch (err: any) {
       showToast(`Error: ${err.message}`);
     } finally {
@@ -74,19 +72,19 @@ export function OrdersView() {
 
   if (!currentOrder) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-16 text-center">
-        <span className="material-symbols-outlined text-5xl text-outline-variant mb-2">
+      <div className="max-w-4xl mx-auto px-4 py-20 text-center">
+        <span className="material-symbols-outlined text-5xl text-stone-400 mb-2">
           receipt_long
         </span>
-        <h2 className="font-display text-2xl font-bold text-primary mb-2">
+        <h2 className="font-display text-2xl font-bold text-stone-900 mb-2">
           No tienes pedidos registrados
         </h2>
-        <p className="text-sm text-on-surface-variant max-w-sm mx-auto mb-6">
+        <p className="text-sm text-stone-600 max-w-sm mx-auto mb-6">
           Realiza tu primera orden desde el menú para darle seguimiento en vivo.
         </p>
         <button
           onClick={() => setActiveTab('menu-y-catalogo')}
-          className="px-6 py-3 rounded-xl bg-secondary text-white font-bold text-sm hover:bg-[#8e3312]"
+          className="px-6 py-3 rounded-xl bg-secondary text-white font-bold text-sm hover:bg-orange-700"
         >
           Ir al Menú
         </button>
@@ -98,7 +96,7 @@ export function OrdersView() {
   const steps = [
     { number: 1, label: '1. Recibido', sub: 'Comprobado en cocina', status: 'RECEIVED' },
     { number: 2, label: '2. En Proceso', sub: 'Barista preparando', status: 'PREPARING' },
-    { number: 3, label: '3. Listo', sub: 'En mostrador para retiro', status: 'READY' },
+    { number: 3, label: '3. Listo en Barra', sub: 'En mostrador para retiro', status: 'READY' },
     { number: 4, label: '4. Entregado', sub: 'Escaneo completado', status: 'DELIVERED' },
   ];
 
@@ -116,91 +114,89 @@ export function OrdersView() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full pb-20 flex flex-col gap-6">
       {/* Top Status Hero Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-surface-container p-6 sm:p-8 shadow-xs border border-surface-container-high">
-        <div className="absolute -right-16 -bottom-16 w-80 h-80 rounded-full bg-secondary/5 blur-3xl pointer-events-none"></div>
-
+      <div className="relative overflow-hidden rounded-3xl bg-white p-6 sm:p-8 shadow-sm border border-stone-200">
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div className="flex flex-col gap-1.5 max-w-2xl">
-            <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-col gap-2 max-w-2xl">
+            <div className="flex flex-wrap items-center gap-2.5">
               <span
-                className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-xs ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider shadow-xs ${
                   currentOrder.status === 'READY'
-                    ? 'bg-[#2E6B47] text-white'
+                    ? 'bg-emerald-600 text-white'
                     : currentOrder.status === 'CANCELLED'
-                    ? 'bg-error text-white'
+                    ? 'bg-red-600 text-white'
                     : 'bg-secondary text-white'
                 }`}
               >
                 <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
                 {currentOrder.statusLabel}
               </span>
-              <span className="text-xs text-on-surface-variant font-semibold">
+              <span className="text-xs text-stone-600 font-bold">
                 Orden #{currentOrder.id}
               </span>
-              <span className="text-outline-variant">•</span>
-              <span className="text-xs text-secondary font-semibold">
+              <span className="text-stone-300">•</span>
+              <span className="text-xs text-orange-700 font-bold">
                 {currentOrder.pickupStation.name}
               </span>
             </div>
 
-            <h1 className="font-display text-2xl sm:text-3xl font-bold text-primary tracking-tight mt-1">
+            <h1 className="font-display text-2xl sm:text-3xl font-black text-stone-900 tracking-tight mt-1">
               {currentOrder.status === 'READY'
                 ? '¡Tu pedido está listo para recoger!'
                 : currentOrder.status === 'DELIVERED'
                 ? '¡Pedido entregado con éxito! ¡Buen provecho!'
                 : currentOrder.status === 'CANCELLED'
                 ? 'Pedido Cancelado'
-                : '¡Tu pedido está en marcha en cocina!'}
+                : '¡Tu pedido está en preparación en cocina!'}
             </h1>
 
-            <p className="text-sm sm:text-base text-on-surface-variant leading-relaxed">
+            <p className="text-sm sm:text-base text-stone-600 leading-relaxed font-normal">
               {currentOrder.status === 'READY' ? (
-                <>Acércate ahora mismo a la <strong className="text-secondary">Barra 2 (Entregas Express)</strong> con tu turno <strong className="text-primary font-display">{currentOrder.ticketNumber}</strong>.</>
+                <>Acércate ahora mismo a la <strong className="text-stone-900 font-bold">Barra 2 (Entregas Express)</strong> con tu turno <strong className="text-secondary font-display font-black">{currentOrder.ticketNumber}</strong>.</>
               ) : currentOrder.status === 'DELIVERED' ? (
-                <>Has acumulado <strong className="text-secondary">+{currentOrder.loyaltyPoints} Puntos Quick-Bite</strong> en tu carné universitario.</>
+                <>Has acumulado <strong className="text-secondary font-bold">+{currentOrder.loyaltyPoints} Puntos Quick-Bite</strong> en tu carné universitario.</>
               ) : currentOrder.status === 'CANCELLED' ? (
                 <>El importe ha sido reintegrado a tu saldo institucional.</>
               ) : (
-                <>Estará listo en aproximadamente <strong className="text-secondary">6 minutos</strong> en la <strong className="text-primary">Barra 2 (Entregas Express)</strong>.</>
+                <>Estará listo en aproximadamente <strong className="text-secondary font-bold">6 minutos</strong> en el mostrador del <strong className="text-stone-900 font-bold">Edificio B</strong>.</>
               )}
             </p>
           </div>
 
           {/* Timing Pill */}
-          <div className="flex items-center gap-3 bg-surface-container-lowest p-4 rounded-2xl shadow-xs border border-surface-container-high self-start lg:self-center shrink-0">
-            <div className="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary">
+          <div className="flex items-center gap-3.5 bg-stone-50 p-4 rounded-2xl border border-stone-200 self-start lg:self-center shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center text-orange-800">
               <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>
                 timer
               </span>
             </div>
             <div className="flex flex-col">
-              <span className="text-[10px] uppercase tracking-wider text-on-surface-variant font-semibold">
+              <span className="text-[11px] uppercase tracking-wider text-stone-500 font-bold">
                 Hora estimada de retiro
               </span>
-              <span className="font-display text-lg font-bold text-on-surface">
+              <span className="font-display text-lg font-black text-stone-900">
                 {new Date(currentOrder.estimatedReadyAt).toLocaleTimeString('es-CO', {
                   hour: '2-digit',
                   minute: '2-digit',
                 })}
               </span>
-              <span className="text-[11px] text-secondary font-medium">Turno: {currentOrder.ticketNumber}</span>
+              <span className="text-xs text-secondary font-bold">Turno Asignado: {currentOrder.ticketNumber}</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* 4-State Stepper */}
-      <div className="bg-surface-container-lowest p-6 sm:p-8 rounded-2xl shadow-xs border border-surface-container-high">
+      <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-stone-200">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
           <div>
-            <span className="text-[11px] uppercase text-on-surface-variant tracking-wider font-bold">
+            <span className="text-xs uppercase text-stone-500 tracking-wider font-extrabold">
               Fases del Pedido en Tiempo Real
             </span>
-            <h2 className="font-display text-xl text-primary font-bold">
-              Progreso de la Orden
+            <h2 className="font-display text-xl text-stone-900 font-black">
+              Progreso del Servicio
             </h2>
           </div>
-          <div className="inline-flex items-center gap-1.5 text-on-surface-variant text-xs bg-surface-container px-3 py-1 rounded-full border border-surface-container-high">
+          <div className="inline-flex items-center gap-1.5 text-stone-600 text-xs bg-stone-100 px-3.5 py-1.5 rounded-full border border-stone-200 font-semibold">
             <span className="material-symbols-outlined text-sm text-secondary animate-spin">sync</span>
             <span>Actualización en vivo</span>
           </div>
@@ -214,40 +210,40 @@ export function OrdersView() {
             return (
               <div
                 key={st.number}
-                className={`flex items-center gap-3 p-3.5 rounded-xl border transition-all ${
+                className={`flex items-center gap-3.5 p-4 rounded-2xl border transition-all ${
                   isCurrent
-                    ? 'bg-secondary-fixed/30 border-secondary ring-1 ring-secondary shadow-xs'
+                    ? 'bg-orange-50/60 border-secondary ring-1 ring-secondary shadow-xs'
                     : isCompleted
-                    ? 'bg-surface-container-low border-surface-container'
-                    : 'bg-surface-container-low/40 border-transparent opacity-60'
+                    ? 'bg-stone-50 border-stone-200'
+                    : 'bg-white border-stone-200 opacity-60'
                 }`}
               >
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0 transition-all ${
                     isCurrent
-                      ? 'bg-secondary text-white animate-pulse'
+                      ? 'bg-secondary text-white animate-pulse shadow-sm'
                       : isCompleted
-                      ? 'bg-primary text-white'
-                      : 'bg-surface-container-high text-on-surface-variant'
+                      ? 'bg-stone-900 text-white'
+                      : 'bg-stone-200 text-stone-600'
                   }`}
                 >
                   {isCompleted ? (
-                    <span className="material-symbols-outlined text-lg">check</span>
+                    <span className="material-symbols-outlined text-lg font-bold">check</span>
                   ) : (
                     st.number
                   )}
                 </div>
                 <div className="flex flex-col">
                   <span
-                    className={`font-display text-xs font-bold leading-snug ${
-                      isCurrent ? 'text-secondary' : 'text-on-surface'
+                    className={`font-display text-xs sm:text-sm font-bold leading-snug ${
+                      isCurrent ? 'text-secondary' : 'text-stone-900'
                     }`}
                   >
                     {st.label}
                   </span>
-                  <span className="text-[11px] text-on-surface-variant">{st.sub}</span>
+                  <span className="text-xs text-stone-500">{st.sub}</span>
                   {isCurrent && (
-                    <span className="text-[10px] text-secondary font-bold mt-0.5">En curso ahora</span>
+                    <span className="text-[11px] text-secondary font-bold mt-0.5">En preparación</span>
                   )}
                 </div>
               </div>
@@ -256,15 +252,15 @@ export function OrdersView() {
         </div>
 
         {/* Clean Architecture Barista Simulation Station */}
-        <div className="mt-6 pt-5 border-t border-surface-container flex flex-col md:flex-row items-start md:items-center justify-between gap-3 bg-surface-container-low/50 p-4 rounded-xl">
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-secondary text-xl">coffee_maker</span>
+        <div className="mt-6 pt-5 border-t border-stone-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 bg-stone-50 p-4 sm:p-5 rounded-2xl border border-stone-200">
+          <div className="flex items-center gap-3">
+            <span className="material-symbols-outlined text-secondary text-2xl">coffee_maker</span>
             <div>
-              <span className="text-xs font-bold text-primary block">
-                Simulador Barista (Demostración Clean Architecture):
+              <span className="text-xs font-bold text-stone-900 block">
+                Simulador Barista (Prueba de Casos de Uso):
               </span>
-              <span className="text-[11px] text-on-surface-variant">
-                Ejecuta las transiciones de estado a través de los casos de uso del dominio:
+              <span className="text-xs text-stone-500 font-medium">
+                Avanza o actualiza el ciclo de vida del pedido:
               </span>
             </div>
           </div>
@@ -274,7 +270,7 @@ export function OrdersView() {
               <button
                 disabled={isUpdatingStatus}
                 onClick={() => handleUpdateStatus('PREPARING')}
-                className="px-3 py-1.5 rounded-lg bg-secondary text-white text-xs font-bold hover:bg-[#8e3312] transition-colors"
+                className="px-4 py-2 rounded-xl bg-secondary text-white text-xs font-bold hover:bg-orange-700 transition-colors shadow-xs"
               >
                 Pasar a &quot;En Proceso&quot;
               </button>
@@ -283,7 +279,7 @@ export function OrdersView() {
               <button
                 disabled={isUpdatingStatus}
                 onClick={() => handleUpdateStatus('READY')}
-                className="px-3 py-1.5 rounded-lg bg-[#2E6B47] text-white text-xs font-bold hover:bg-[#245437] transition-colors"
+                className="px-4 py-2 rounded-xl bg-emerald-700 text-white text-xs font-bold hover:bg-emerald-800 transition-colors shadow-xs"
               >
                 Avanzar a &quot;Listo en Barra&quot;
               </button>
@@ -292,7 +288,7 @@ export function OrdersView() {
               <button
                 disabled={isUpdatingStatus}
                 onClick={() => handleUpdateStatus('DELIVERED')}
-                className="px-3 py-1.5 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary-container transition-colors"
+                className="px-4 py-2 rounded-xl bg-stone-900 text-white text-xs font-bold hover:bg-black transition-colors shadow-xs"
               >
                 Marcar como &quot;Entregado&quot;
               </button>
@@ -301,7 +297,7 @@ export function OrdersView() {
               <button
                 disabled={isUpdatingStatus}
                 onClick={handleCancelOrder}
-                className="px-3 py-1.5 rounded-lg bg-surface-container hover:bg-error-container hover:text-error text-on-surface-variant text-xs font-semibold transition-colors"
+                className="px-4 py-2 rounded-xl bg-white hover:bg-red-50 hover:text-red-700 text-stone-600 border border-stone-300 text-xs font-bold transition-colors"
               >
                 Cancelar Orden
               </button>
@@ -315,28 +311,28 @@ export function OrdersView() {
         {/* Left: Digital Ticket Pass & Station Map */}
         <div className="lg:col-span-7 flex flex-col gap-6">
           {/* Digital Retrieval Pass (Ticket Style) */}
-          <div className="relative bg-surface-container-lowest rounded-2xl shadow-md border border-surface-container-high overflow-hidden flex flex-col sm:flex-row">
+          <div className="relative bg-white rounded-3xl shadow-sm border border-stone-200 overflow-hidden flex flex-col sm:flex-row">
             {/* Punch notch effect */}
-            <div className="hidden sm:block absolute top-1/2 -left-3 w-6 h-6 rounded-full bg-surface border-r border-surface-container-high -translate-y-1/2 z-20"></div>
-            <div className="hidden sm:block absolute top-1/2 -right-3 w-6 h-6 rounded-full bg-surface border-l border-surface-container-high -translate-y-1/2 z-20"></div>
+            <div className="hidden sm:block absolute top-1/2 -left-3 w-6 h-6 rounded-full bg-surface border-r border-stone-200 -translate-y-1/2 z-20"></div>
+            <div className="hidden sm:block absolute top-1/2 -right-3 w-6 h-6 rounded-full bg-surface border-l border-stone-200 -translate-y-1/2 z-20"></div>
 
             {/* Left side: Turn Code & QR */}
-            <div className="sm:w-5/12 bg-primary text-white p-6 flex flex-col justify-between items-center text-center">
+            <div className="sm:w-5/12 bg-stone-900 text-white p-6 flex flex-col justify-between items-center text-center">
               <div className="flex flex-col items-center gap-1">
-                <span className="text-[10px] uppercase tracking-widest text-primary-fixed-dim font-bold">
+                <span className="text-xs uppercase tracking-widest text-orange-200 font-bold">
                   Turno de Retiro
                 </span>
                 <div className="font-display text-4xl sm:text-5xl font-black tracking-tight text-white my-1">
                   {currentOrder.ticketNumber}
                 </div>
-                <span className="text-[11px] bg-primary-container text-white px-2.5 py-0.5 rounded-full font-semibold">
+                <span className="text-xs bg-white/20 text-white px-3 py-0.5 rounded-full font-bold">
                   {currentOrder.pickupStation.name}
                 </span>
               </div>
 
               {/* Styled SVG QR Code */}
-              <div className="bg-white p-2.5 rounded-xl my-4 shadow-xs">
-                <svg className="w-28 h-28 text-on-surface" fill="currentColor" viewBox="0 0 100 100">
+              <div className="bg-white p-3 rounded-2xl my-4 shadow-sm">
+                <svg className="w-28 h-28 text-stone-900" fill="currentColor" viewBox="0 0 100 100">
                   <rect x="10" y="10" width="28" height="28" rx="4" fill="currentColor" />
                   <rect x="16" y="16" width="16" height="16" rx="2" fill="#ffffff" />
                   <rect x="20" y="20" width="8" height="8" fill="currentColor" />
@@ -362,19 +358,19 @@ export function OrdersView() {
                 </svg>
               </div>
 
-              <p className="text-[11px] text-primary-fixed-dim">
-                Presenta este código frente al escáner al escuchar tu turno.
+              <p className="text-xs text-stone-300 font-medium">
+                Escanea este código en el mostrador al escuchar tu turno.
               </p>
             </div>
 
             {/* Right side: Items breakdown */}
-            <div className="sm:w-7/12 p-5 sm:p-6 flex flex-col justify-between gap-4">
+            <div className="sm:w-7/12 p-6 flex flex-col justify-between gap-4">
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] uppercase tracking-wider text-on-surface-variant font-bold">
-                    Detalle de Preparación
+                <div className="flex items-center justify-between mb-3 pb-2 border-b border-stone-100">
+                  <span className="text-xs uppercase tracking-wider text-stone-600 font-black">
+                    Detalle de los Productos
                   </span>
-                  <span className="text-xs px-2 py-0.5 rounded bg-surface-container font-semibold">
+                  <span className="text-xs px-2.5 py-0.5 rounded-full bg-stone-100 font-bold text-stone-800">
                     {currentOrder.items.length} {currentOrder.items.length === 1 ? 'artículo' : 'artículos'}
                   </span>
                 </div>
@@ -383,24 +379,24 @@ export function OrdersView() {
                   {currentOrder.items.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center justify-between p-2 rounded-lg hover:bg-surface-container transition-colors"
+                      className="flex items-center justify-between p-2 rounded-xl hover:bg-stone-50 transition-colors"
                     >
-                      <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded-md bg-surface-container-high flex items-center justify-center text-primary font-bold text-xs shrink-0">
+                      <div className="flex items-center gap-2.5">
+                        <span className="w-6 h-6 rounded-md bg-stone-100 flex items-center justify-center text-stone-900 font-black text-xs shrink-0 border border-stone-200">
                           {item.quantity}x
                         </span>
                         <div className="flex flex-col">
-                          <span className="text-xs font-semibold text-on-surface">
+                          <span className="text-xs sm:text-sm font-bold text-stone-900">
                             {item.productName}
                           </span>
                           {item.customizations && (
-                            <span className="text-[10px] text-on-surface-variant line-clamp-1">
+                            <span className="text-xs text-stone-500 line-clamp-1">
                               {item.customizations}
                             </span>
                           )}
                         </div>
                       </div>
-                      <span className="font-display text-xs font-bold text-on-surface shrink-0">
+                      <span className="font-display text-xs sm:text-sm font-black text-stone-900 shrink-0">
                         {item.formattedSubtotal}
                       </span>
                     </div>
@@ -408,72 +404,72 @@ export function OrdersView() {
                 </div>
               </div>
 
-              <div className="bg-surface-container-low p-3 rounded-xl border border-surface-container flex items-center justify-between">
+              <div className="bg-stone-50 p-3.5 rounded-2xl border border-stone-200 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-secondary text-base">badge</span>
-                  <span className="text-xs text-on-surface font-semibold">
+                  <span className="material-symbols-outlined text-secondary text-lg">badge</span>
+                  <span className="text-xs text-stone-900 font-bold">
                     {currentOrder.paymentMethod.label}
                   </span>
                 </div>
                 <div className="text-right">
-                  <span className="font-display text-sm font-bold text-primary block">
+                  <span className="font-display text-sm sm:text-base font-black text-stone-900 block">
                     {currentOrder.formattedTotal}
                   </span>
-                  <span className="text-[10px] text-secondary font-bold">Pagado con éxito</span>
+                  <span className="text-xs text-emerald-700 font-bold">Pagado con éxito</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Campus Station Schematic Layout */}
-          <div className="bg-surface-container-lowest p-5 sm:p-6 rounded-2xl shadow-xs border border-surface-container-high flex flex-col gap-3">
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-stone-200 flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary text-xl">pin_drop</span>
-                <h3 className="font-display text-base font-bold text-primary">
-                  Punto de Recogida en Campus
+                <span className="material-symbols-outlined text-stone-900 text-xl">pin_drop</span>
+                <h3 className="font-display text-base font-bold text-stone-900">
+                  Ubicación de Recogida en el Campus
                 </h3>
               </div>
-              <span className="text-xs font-semibold text-secondary bg-secondary/10 px-2.5 py-0.5 rounded-full">
+              <span className="text-xs font-bold text-orange-800 bg-orange-100 px-3 py-1 rounded-full">
                 Piso 1 • Patio Central
               </span>
             </div>
 
             {/* Architectural schematic */}
-            <div className="relative w-full h-44 rounded-xl bg-surface-container overflow-hidden p-4 flex flex-col justify-between border border-surface-container-high">
-              <div className="relative z-10 flex items-center justify-between text-[11px] text-on-surface-variant">
-                <span className="bg-surface-container-lowest px-2 py-0.5 rounded font-semibold shadow-xs">
+            <div className="relative w-full h-44 rounded-2xl bg-stone-100 overflow-hidden p-4 flex flex-col justify-between border border-stone-200">
+              <div className="relative z-10 flex items-center justify-between text-xs text-stone-600 font-bold">
+                <span className="bg-white px-2.5 py-1 rounded-lg shadow-xs border border-stone-200">
                   Acceso Principal Edificio B
                 </span>
-                <span className="bg-surface-container-lowest px-2 py-0.5 rounded shadow-xs">
+                <span className="bg-white px-2.5 py-1 rounded-lg shadow-xs border border-stone-200">
                   Conexión a Biblioteca
                 </span>
               </div>
 
               <div className="relative z-10 grid grid-cols-3 gap-2 my-auto text-center">
-                <div className="p-2 rounded-lg bg-surface-container-high text-on-surface-variant text-[11px] opacity-60">
+                <div className="p-2.5 rounded-xl bg-white text-stone-500 text-xs font-semibold border border-stone-200">
                   Barra 1: Almuerzos
                 </div>
-                <div className="p-2.5 rounded-xl bg-secondary text-white shadow-md flex flex-col items-center justify-center transform scale-105 border border-white/20">
-                  <div className="flex items-center gap-1 text-xs font-bold font-display">
-                    <span className="material-symbols-outlined text-sm">store</span>
-                    <span>Barra 2 (Retiro)</span>
+                <div className="p-3 rounded-2xl bg-secondary text-white shadow-md flex flex-col items-center justify-center transform scale-105 border border-white/20">
+                  <div className="flex items-center gap-1.5 text-xs font-black font-display">
+                    <span className="material-symbols-outlined text-base">store</span>
+                    <span>Barra 2 (Entregas)</span>
                   </div>
-                  <span className="text-[10px] text-secondary-fixed">
-                    Tu orden {currentOrder.ticketNumber} aquí
+                  <span className="text-xs text-orange-100 font-semibold mt-0.5">
+                    Turno {currentOrder.ticketNumber} aquí
                   </span>
                 </div>
-                <div className="p-2 rounded-lg bg-surface-container-high text-on-surface-variant text-[11px] opacity-60">
+                <div className="p-2.5 rounded-xl bg-white text-stone-500 text-xs font-semibold border border-stone-200">
                   Barra 3: Bebidas Frías
                 </div>
               </div>
 
-              <div className="relative z-10 flex items-center justify-between text-[11px] text-on-surface-variant">
+              <div className="relative z-10 flex items-center justify-between text-xs text-stone-600 font-semibold">
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-secondary"></span>
-                  <span className="font-semibold text-on-surface">Mostrador Express Activado</span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+                  <span className="font-bold text-stone-900">Mostrador Express Activado</span>
                 </div>
-                <span className="text-outline">Distancia estimada: 2 min a pie desde Aulario</span>
+                <span className="text-stone-500">Distancia aproximada: 2 min a pie</span>
               </div>
             </div>
           </div>
@@ -482,115 +478,115 @@ export function OrdersView() {
         {/* Right: Quick Actions & History (5 cols) */}
         <div className="lg:col-span-5 flex flex-col gap-6">
           {/* Quick Actions */}
-          <div className="bg-surface-container-lowest p-5 rounded-2xl shadow-xs border border-surface-container-high flex flex-col gap-3">
-            <h3 className="font-display text-base font-bold text-primary">Acciones Rápidas</h3>
-            <div className="flex flex-col gap-2">
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-stone-200 flex flex-col gap-3">
+            <h3 className="font-display text-base font-bold text-stone-900">Acciones Rápidas</h3>
+            <div className="flex flex-col gap-2.5">
               <button
                 onClick={() => setShowReceipt(true)}
-                className="w-full flex items-center justify-between p-3 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface transition-all text-left border border-surface-container"
+                className="w-full flex items-center justify-between p-3.5 rounded-2xl bg-stone-50 hover:bg-stone-100 text-stone-900 transition-all text-left border border-stone-200 shadow-xs"
               >
                 <div className="flex items-center gap-3">
                   <span className="material-symbols-outlined text-primary text-xl">download</span>
                   <div className="flex flex-col">
-                    <span className="text-xs font-bold">Ver Comprobante Digital</span>
-                    <span className="text-[11px] text-on-surface-variant">
-                      Recibo oficial universitario
+                    <span className="text-xs sm:text-sm font-bold">Ver Comprobante Digital</span>
+                    <span className="text-xs text-stone-500">
+                      Recibo oficial del campus
                     </span>
                   </div>
                 </div>
-                <span className="material-symbols-outlined text-outline text-base">chevron_right</span>
+                <span className="material-symbols-outlined text-stone-400 text-base">chevron_right</span>
               </button>
 
               <button
                 onClick={() => showToast('Retraso de 10 min notificado a la Barra 2.')}
-                className="w-full flex items-center justify-between p-3 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface transition-all text-left border border-surface-container"
+                className="w-full flex items-center justify-between p-3.5 rounded-2xl bg-stone-50 hover:bg-stone-100 text-stone-900 transition-all text-left border border-stone-200 shadow-xs"
               >
                 <div className="flex items-center gap-3">
                   <span className="material-symbols-outlined text-secondary text-xl">schedule</span>
                   <div className="flex flex-col">
-                    <span className="text-xs font-bold">Notificar retraso a cafetería</span>
-                    <span className="text-[11px] text-on-surface-variant">
+                    <span className="text-xs sm:text-sm font-bold">Notificar retraso a cafetería</span>
+                    <span className="text-xs text-stone-500">
                       Llegaré 5 o 10 min más tarde
                     </span>
                   </div>
                 </div>
-                <span className="material-symbols-outlined text-outline text-base">chevron_right</span>
+                <span className="material-symbols-outlined text-stone-400 text-base">chevron_right</span>
               </button>
 
               <button
                 onClick={() => showToast('Conectando con el encargado de cafetería...')}
-                className="w-full flex items-center justify-between p-3 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface transition-all text-left border border-surface-container"
+                className="w-full flex items-center justify-between p-3.5 rounded-2xl bg-stone-50 hover:bg-stone-100 text-stone-900 transition-all text-left border border-stone-200 shadow-xs"
               >
                 <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-primary text-xl">help_outline</span>
+                  <span className="material-symbols-outlined text-stone-700 text-xl">help_outline</span>
                   <div className="flex flex-col">
-                    <span className="text-xs font-bold">Soporte en Vivo del Mostrador</span>
-                    <span className="text-[11px] text-on-surface-variant">
+                    <span className="text-xs sm:text-sm font-bold">Soporte en Vivo del Mostrador</span>
+                    <span className="text-xs text-stone-500">
                       Kiosco Central Edificio B
                     </span>
                   </div>
                 </div>
-                <span className="material-symbols-outlined text-outline text-base">chevron_right</span>
+                <span className="material-symbols-outlined text-stone-400 text-base">chevron_right</span>
               </button>
             </div>
           </div>
 
           {/* Green Points Banner */}
-          <div className="bg-gradient-to-br from-surface-container-low to-surface-container p-5 rounded-2xl shadow-xs border border-surface-container flex items-start gap-3">
-            <div className="w-10 h-10 rounded-xl bg-tertiary-fixed text-tertiary flex items-center justify-center shrink-0">
-              <span className="material-symbols-outlined text-xl">eco</span>
+          <div className="bg-emerald-50 p-6 rounded-3xl shadow-xs border border-emerald-200 flex items-start gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-emerald-200 text-emerald-900 flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-2xl">eco</span>
             </div>
             <div className="flex flex-col gap-1">
-              <h4 className="text-xs font-bold text-on-surface">
+              <h4 className="text-xs sm:text-sm font-bold text-emerald-900">
                 ¡Tu pedido sumó {currentOrder.loyaltyPoints} Puntos Verdes!
               </h4>
-              <p className="text-[11px] text-on-surface-variant leading-relaxed">
+              <p className="text-xs text-emerald-800 leading-relaxed">
                 Por haber pedido vaso compostable. Canjea tus puntos acumulados en la cafetería central por snacks gratis.
               </p>
             </div>
           </div>
 
           {/* All Orders History */}
-          <div className="bg-surface-container-lowest p-5 rounded-2xl shadow-xs border border-surface-container-high flex flex-col gap-3">
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-stone-200 flex flex-col gap-3">
             <div className="flex items-center justify-between">
-              <h3 className="font-display text-base font-bold text-primary">Historial Reciente</h3>
-              <span className="text-xs text-on-surface-variant font-medium">
+              <h3 className="font-display text-base font-bold text-stone-900">Historial Reciente</h3>
+              <span className="text-xs text-stone-500 font-bold">
                 {allOrders.length} registros
               </span>
             </div>
 
-            <div className="flex flex-col gap-2 max-h-64 overflow-y-auto pr-1">
+            <div className="flex flex-col gap-2.5 max-h-64 overflow-y-auto pr-1">
               {allOrders.map((ord) => (
                 <div
                   key={ord.id}
                   onClick={() => setActiveOrder(ord)}
-                  className={`p-3 rounded-xl cursor-pointer transition-all flex items-center justify-between border ${
+                  className={`p-3.5 rounded-2xl cursor-pointer transition-all flex items-center justify-between border ${
                     ord.id === currentOrder.id
-                      ? 'bg-surface-container border-secondary ring-1 ring-secondary'
-                      : 'bg-surface-container-low hover:bg-surface-container border-surface-container'
+                      ? 'bg-orange-50/50 border-secondary ring-1 ring-secondary shadow-xs'
+                      : 'bg-stone-50 hover:bg-stone-100 border-stone-200'
                   }`}
                 >
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-primary text-xs">
-                      <span className="material-symbols-outlined text-base">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-white border border-stone-200 flex items-center justify-center text-stone-900 text-xs font-bold">
+                      <span className="material-symbols-outlined text-lg">
                         {ord.status === 'DELIVERED' ? 'check_circle' : 'pending'}
                       </span>
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-xs font-bold text-on-surface">
+                      <span className="text-xs sm:text-sm font-bold text-stone-900">
                         Pedido #{ord.id} ({ord.ticketNumber})
                       </span>
-                      <span className="text-[10px] text-on-surface-variant">
-                        {ord.items.length} {ord.items.length === 1 ? 'artículo' : 'artículos'} • {ord.statusLabel}
+                      <span className="text-xs text-stone-500">
+                        {ord.items.length} {ord.items.length === 1 ? 'producto' : 'productos'} • {ord.statusLabel}
                       </span>
                     </div>
                   </div>
                   <div className="text-right">
-                    <span className="font-display text-xs font-bold text-on-surface block">
+                    <span className="font-display text-xs sm:text-sm font-black text-stone-900 block">
                       {ord.formattedTotal}
                     </span>
-                    <span className="text-[10px] text-secondary font-semibold">
-                      {ord.status === 'DELIVERED' ? 'Completado' : 'Ver turno'}
+                    <span className="text-xs text-secondary font-bold">
+                      {ord.status === 'DELIVERED' ? 'Completado' : 'Ver Turno'}
                     </span>
                   </div>
                 </div>

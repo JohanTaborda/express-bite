@@ -4,7 +4,7 @@ import { container } from '@/lib/clean-architecture/infrastructure/di/container'
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const studentId = searchParams.get('studentId') || '2021-4892';
+    const studentId = searchParams.get('studentId') || '2024-1088';
     const balance = container.paymentGateway.getStudentBalance(studentId);
 
     return NextResponse.json({
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const studentId = body.studentId || '2021-4892';
+    const studentId = body.studentId || '2024-1088';
     const amount = Number(body.amount) || 20000;
 
     container.paymentGateway.rechargeBalance(studentId, amount);

@@ -59,7 +59,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const fetchBalance = useCallback(async () => {
     try {
-      const res = await fetch('/api/student/balance?studentId=2021-4892');
+      const res = await fetch('/api/student/balance?studentId=2024-1088');
       const data = await res.json();
       if (data.success && typeof data.balance === 'number') {
         setStudentBalance(data.balance);
@@ -97,7 +97,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       try {
         const [ordersRes, balanceRes] = await Promise.all([
           fetch('/api/orders'),
-          fetch('/api/student/balance?studentId=2021-4892'),
+          fetch('/api/student/balance?studentId=2024-1088'),
         ]);
         const ordersJson = await ordersRes.json();
         const balanceJson = await balanceRes.json();

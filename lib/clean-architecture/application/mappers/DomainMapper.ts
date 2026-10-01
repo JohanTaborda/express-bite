@@ -1,5 +1,5 @@
 import { Order } from '../../domain/entities/Order';
-import { Product } from '../../domain/entities/Product';
+import { Product, PRODUCT_CATEGORY_LABELS } from '../../domain/entities/Product';
 import { ORDER_STATUS_MAP } from '../../domain/value-objects/OrderStatus';
 import { OrderOutputDTO, OrderItemOutputDTO, ProductOutputDTO } from '../dtos/OrderDTO';
 
@@ -12,6 +12,7 @@ export class DomainMapper {
       price: product.price.amount,
       formattedPrice: product.price.format(),
       category: product.category,
+      categoryLabel: PRODUCT_CATEGORY_LABELS[product.category] || product.category.replace(/_/g, ' '),
       imageUrl: product.imageUrl,
       preparationTimeMinutes: product.preparationTimeMinutes,
       calories: product.calories,

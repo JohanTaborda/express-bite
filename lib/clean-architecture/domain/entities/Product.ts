@@ -8,6 +8,15 @@ export type ProductCategory =
   | 'SANDWICHES_SALADOS'
   | 'COMBOS_ESTUDIANTILES';
 
+export const PRODUCT_CATEGORY_LABELS: Record<ProductCategory, string> = {
+  TODOS: 'Todos los Menús',
+  CAFE_ESPECIALIDAD: 'Café de Especialidad',
+  BEBIDAS_FRIAS: 'Bebidas Frías y Frappés',
+  REPOSTERIA: 'Bakery y Repostería',
+  SANDWICHES_SALADOS: 'Sándwiches y Salados',
+  COMBOS_ESTUDIANTILES: 'Combos Estudiantiles',
+};
+
 export interface ProductProps {
   id: string;
   name: string;

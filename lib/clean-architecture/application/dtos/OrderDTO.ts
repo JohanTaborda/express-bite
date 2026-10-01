@@ -71,6 +71,7 @@ export interface ProductOutputDTO {
   price: number;
   formattedPrice: string;
   category: string;
+  categoryLabel: string;
   imageUrl: string;
   preparationTimeMinutes: number;
   calories: number;

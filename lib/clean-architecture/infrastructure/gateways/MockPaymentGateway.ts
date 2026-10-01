@@ -9,7 +9,8 @@ import { Money } from '../../domain/value-objects/Money';
  */
 export class MockPaymentGateway implements IPaymentGateway {
   private studentBalances: Map<string, number> = new Map([
-    ['2021-4892', 24500], // Sofía Mendoza's initial campus card balance
+    ['2024-1088', 24500], // Johan David Taborda - Saldo carné universitario inicial
+    ['2021-4892', 24500],
   ]);
 
   public getStudentBalance(studentId: string): number {

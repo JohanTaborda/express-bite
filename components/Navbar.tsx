@@ -151,23 +151,16 @@ export function Navbar() {
             </button>
 
             {/* User Profile */}
-            <div className="flex items-center gap-2 pl-1 border-l border-surface-container-high">
-              <div className="w-9 h-9 rounded-full overflow-hidden relative ring-2 ring-surface-container-high shrink-0">
-                <Image
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGwu5ba7o2MhUfDWS8HAANZtM-nv2cf1Igtt5GZqpDxRcD-qlm7LmAimrWdH6uJ8ZrQ6zcNr0SYpFaYyWAlJsDMba7jG30gVrXjnwxg3q4RYRzJ0Ir_Yb_OpGahP_esBhrgKluboe2_U8qyjBx7Z079fKIowpgLl69IUC7eKWm2kU5uUHZcwPzUz_6UMeeAS1-hRh-Q_v5m0Y2KqWHyKoepJ0GL9ekW2KsSvxzNX_6JjY2a1sc__9H"
-                  alt="Foto de perfil de Sofía Mendoza"
-                  fill
-                  sizes="36px"
-                  className="object-cover"
-                  referrerPolicy="no-referrer"
-                />
+            <div className="flex items-center gap-2.5 pl-2 border-l border-surface-container-high">
+              <div className="w-10 h-10 rounded-full overflow-hidden relative ring-2 ring-primary/20 shrink-0 bg-primary-container text-white flex items-center justify-center font-bold text-sm shadow-xs">
+                JD
               </div>
               <div className="hidden md:flex flex-col text-left">
                 <span className="text-xs font-bold text-on-surface leading-tight">
-                  Sofía Mendoza
+                  Johan David Taborda
                 </span>
-                <span className="text-[11px] text-on-surface-variant">
-                  Estudiante #2021-4892
+                <span className="text-[11px] text-on-surface-variant font-medium">
+                  Carné #2024-1088 • Campus Central
                 </span>
               </div>
             </div>

@@ -46,10 +46,10 @@ export function createMockOrders(products: Product[]): Order[] {
       type: 'CARNE_ESTUDIANTIL',
       label: PAYMENT_METHODS.CARNE_ESTUDIANTIL.label,
       discountPercentage: 10,
-      studentId: '2021-4892',
+      studentId: '2024-1088',
     },
-    studentName: 'Sofía Mendoza',
-    studentId: '2021-4892',
+    studentName: 'Johan David Taborda',
+    studentId: '2024-1088',
     instructions: 'Café con leche deslactosada bien caliente; sándwich prensado por favor.',
     createdAt: createdTenMinsAgo,
     estimatedReadyAt: readyInSixMins,
@@ -76,10 +76,10 @@ export function createMockOrders(products: Product[]): Order[] {
       type: 'CARNE_ESTUDIANTIL',
       label: PAYMENT_METHODS.CARNE_ESTUDIANTIL.label,
       discountPercentage: 10,
-      studentId: '2021-4892',
+      studentId: '2024-1088',
     },
-    studentName: 'Sofía Mendoza',
-    studentId: '2021-4892',
+    studentName: 'Johan David Taborda',
+    studentId: '2024-1088',
     createdAt: new Date(now.getTime() - 26 * 60 * 60 * 1000), // yesterday
   });
 
@@ -99,10 +99,10 @@ export function createMockOrders(products: Product[]): Order[] {
       type: 'CREDIT_CARD',
       label: PAYMENT_METHODS.CREDIT_CARD.label,
       discountPercentage: 0,
-      studentId: '2021-4892',
+      studentId: '2024-1088',
     },
-    studentName: 'Sofía Mendoza',
-    studentId: '2021-4892',
+    studentName: 'Johan David Taborda',
+    studentId: '2024-1088',
     createdAt: new Date(now.getTime() - 72 * 60 * 60 * 1000), // 3 days ago
   });
 
